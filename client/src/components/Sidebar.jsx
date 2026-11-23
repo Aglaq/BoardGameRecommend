@@ -5,6 +5,7 @@ const Sidebar = ({ isLoggedIn }) => {
       <ul>
         <li>Feeling lucky - random game</li>
         <li>Map of nearby board game places</li>
+        <li>{isLoggedIn === true && <>Map of nearby board game places</>}</li>
       </ul>
     </div>
   );

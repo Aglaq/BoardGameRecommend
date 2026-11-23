@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 import { URL } from "../config";
-import { useNavigate } from "react-router";
+import { useNavigate, NavLink } from "react-router";
 
 const Register = (props) => {
   const [form, setValues] = useState({
@@ -44,7 +44,9 @@ const Register = (props) => {
         onChange={handleChange}
         className="form_container"
       >
-        <p>Already have an account? Log In</p>
+        <p>
+          Already have an account? <NavLink to={"/login"}>Log In</NavLink>
+        </p>
         <label>Email</label>
         <input name="email" />
 

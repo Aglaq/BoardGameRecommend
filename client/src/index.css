@@ -131,6 +131,12 @@ code {
   display: flex;
 }
 
+.filter_params {
+  display: flex;
+  flex-direction: column;
+  background-color: #2e303a;
+}
+
 .navbar {
   background-color: #2e303a;
 }
@@ -142,4 +148,21 @@ code {
 
 .mainpart {
   flex-grow: 1;
+}
+
+.filtered-picture {
+  width: 300px;
+  height: 300px;
+}
+
+@media all and (max-width: 1200px) {
+  #filtered div {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media all and (max-width: 700px) {
+  #filtered div {
+    grid-template-columns: 1fr;
+  }
 }
