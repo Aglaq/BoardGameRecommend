@@ -1,122 +1,94 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router";
+import Home from "./subpages/Home.jsx";
+import Login from "./subpages/Login.jsx";
+import Register from "./subpages/Register.jsx";
+import Account from "./subpages/Account.jsx";
+import Navbar from "./components/Navbar.jsx";
+import Sidebar from "./components/Sidebar.jsx";
+import { URL } from "./config.js";
+import * as jose from "jose";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isLoggedIn, setIsLoggedIn] = useState(null);
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(JSON.parse(localStorage.getItem("token")));
+
+  useEffect(() => {
+    const verify_token = async () => {
+      try {
+        if (!token) {
+          setIsLoggedIn(false);
+        } else {
+          axios.defaults.headers.common["Authorization"] = token;
+          const response = await axios.post(`${URL}/users/verify_token`);
+          return response.data.ok ? login(token) : logout();
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    verify_token();
+  }, [token]);
+
+  const login = (token) => {
+    let decodedToken = jose.decodeJwt(token);
+    console.log(decodedToken);
+    // composing a user object based on what data we included in our token (login controller - jwt.sign() first argument)
+    let user = {
+      email: decodedToken.userEmail,
+    };
+    localStorage.setItem("token", JSON.stringify(token));
+    setIsLoggedIn(true);
+    setUser(user);
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    setIsLoggedIn(false);
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+      <Router>
+        <Navbar isLoggedIn={isLoggedIn} />
+        <div id="main">
+          <div className="mainpart">
+            <Routes>
+              <Route path="/" element={<Home />} />;
+              <Route
+                path="/login"
+                element={
+                  isLoggedIn ? (
+                    <Navigate to="/account" />
+                  ) : (
+                    <Login login={login} />
+                  )
+                }
+              />
+              <Route
+                path="/register"
+                element={isLoggedIn ? <Navigate to="/account" /> : <Register />}
+              />
+              <Route
+                path="/account"
+                element={
+                  !isLoggedIn ? (
+                    <Navigate to="/" />
+                  ) : (
+                    <Account logout={logout} user={user} />
+                  )
+                }
+              />
+            </Routes>
+          </div>
+          <Sidebar />
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+      </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
