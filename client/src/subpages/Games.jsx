@@ -1,10 +1,9 @@
 import logo from "../assets/react.svg";
 import FilterPanel from "../components/FilterPanel.jsx";
-import Filtered from "../components/Filtered";
+import Filtered from "../components/Filtered.jsx";
 
-const Home = () => (
+const Games = () => (
   <>
-    <h1>Home Page</h1>
     <div className="img-container">
       <img src={logo} alt="Scorpion Logo" width={200} height={200} />
     </div>
@@ -17,4 +16,4 @@ const Home = () => (
   </>
 );
 
-export default Home;
+export default Games;

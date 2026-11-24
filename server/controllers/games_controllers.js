@@ -1,5 +1,5 @@
 const authorization_token = process.env.API_KEY;
-const API_URL = "https://boardgamegeek.com/xmlapi2/thing?id=167791&stats=1";
+const API_URL = "https://boardgamegeek.com/xmlapi2";
 const { XMLParser } = require("fast-xml-parser");
 
 const parser = new XMLParser({
@@ -11,7 +11,7 @@ const parser = new XMLParser({
 class Game {
   async get_game(req, res) {
     try {
-      const data = await fetch(API_URL, {
+      const data = await fetch(API_URL + "/thing?id=167791&stats=1", {
         headers: { Authorization: `Bearer ${authorization_token}` },
       });
       const game = await data.text();
@@ -34,6 +34,30 @@ class Game {
       };
       // res.json({ data: result.items.item });
       res.json({ ok: true, data: final_data });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async hot_games(req, res) {
+    try {
+      const data = await fetch(API_URL + "/hotness", {
+        headers: { Authorization: `Bearer ${authorization_token}` },
+      });
+      const game = await data.text();
+      const result = parser.parse(game);
+      const filtered = result.items.item;
+      let hot_games_data = [];
+      for (let i = 0; i < 12; i++) {
+        let element = {
+          title: filtered[i].name[0].value,
+          year: filtered[i].yearpublished.value,
+          miniature: filtered[i].thumbnail.value,
+          id: filtered[i].id,
+        };
+        hot_games_data.push(element);
+      }
+      res.json({ ok: true, data: hot_games_data });
     } catch (error) {
       console.log(error);
     }

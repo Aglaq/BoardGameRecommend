@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router";
-import Home from "./subpages/Home.jsx";
+import Games from "./subpages/Games.jsx";
 import Login from "./subpages/Login.jsx";
 import Register from "./subpages/Register.jsx";
 import Account from "./subpages/Account.jsx";
@@ -57,7 +57,8 @@ function App() {
         <div id="main">
           <div className="mainpart">
             <Routes>
-              <Route path="/" element={<Home />} />;
+              <Route path="/" element={<Navigate to="/games" />} />;
+              <Route path="/games" element={<Games />} />;
               <Route
                 path="/login"
                 element={
