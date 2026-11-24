@@ -1,4 +1,4 @@
-const User = require("../models/users_models");
+const User = require("../models/users_models.js");
 const argon2 = require("argon2");
 const jwt = require("jsonwebtoken");
 const validator = require("validator");

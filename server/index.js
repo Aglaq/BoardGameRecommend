@@ -26,5 +26,6 @@ connecting();
 
 // =============== ROUTES ==============================
 app.use("/users", require("./routes/users_routes"));
+app.use("/games", require("./routes/games_routes"));
 // =============== START SERVER =====================
 app.listen(port, () => console.log(`server listening on port ${port}`));

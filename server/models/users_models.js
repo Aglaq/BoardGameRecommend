@@ -8,4 +8,6 @@ const userSchema = new mongoose.Schema(
   { strictQuery: false },
 );
 
+// const gameSchema =
+
 module.exports = mongoose.model("users", userSchema);
