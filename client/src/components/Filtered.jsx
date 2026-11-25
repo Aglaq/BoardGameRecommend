@@ -10,7 +10,7 @@ const Filtered = () => {
   useEffect(() => {
     async function findHotList() {
       try {
-        const response = await axios.get(`${URL}/games`);
+        const response = await axios.get(`${URL}/games/hot`);
         setList(response.data.data);
         // console.log(response.data);
       } catch (error) {
