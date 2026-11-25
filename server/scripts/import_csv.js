@@ -3,6 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const mongoose = require("mongoose");
 const Game = require("../models/games_models");
+const { parse } = require("csv-parse/sync");
 
 require("dotenv").config({
   path: path.resolve(__dirname, "..", ".env"), // go up one folder
@@ -13,21 +14,16 @@ const csv = fs.readFileSync(
   "utf-8",
 );
 
-const rows = csv
-  .split("\n")
-  .slice(1) // skip header
-  .map((line) => {
-    const [id, name, year, rank, bayes, avg, rated, isExp] = line.split(",");
-    return {
-      bgg_id: +id,
-      title: name?.replace(/^"|"$/g, ""),
-      year: +year || null,
-      rank: +rank || null,
-      bayesAverage: +bayes || null,
-      isExpansion: isExp === "1",
-    };
-  })
-  .filter((r) => !r.isExpansion);
+const rows = parse(csv, { columns: true, skip_empty_lines: true, trim: true })
+  .filter((r) => r.is_expansion === "0")
+  .map((r) => ({
+    bgg_id: +r.id,
+    title: r.name,
+    year: +r.yearpublished || null,
+    rank: +r.rank || null,
+    bayesAverage: +r.bayesaverage || null,
+    isExpansion: false,
+  }));
 
 async function main() {
   await mongoose.connect(process.env.MONGO);
@@ -53,4 +49,7 @@ async function main() {
   console.log("Done.");
 }
 
-main();
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});

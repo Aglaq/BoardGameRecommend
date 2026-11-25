@@ -32,8 +32,8 @@ class Game {
         description: filtered.description,
         categories: cat_array,
       };
-      // res.json({ data: result.items.item });
-      res.json({ ok: true, data: final_data });
+      res.json({ data: result.items.item });
+      // res.json({ ok: true, data: final_data });
     } catch (error) {
       console.log(error);
     }

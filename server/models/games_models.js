@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const gameSchema = new mongoose.Schema({
-  bgg_id: { type: Number, unique: true }, // for lookups
+  bgg_id: { type: Number, unique: true },
   title: { type: String, required: true },
   year: { type: Number },
   minplayers: { type: Number },
@@ -14,6 +14,8 @@ const gameSchema = new mongoose.Schema({
   miniature: { type: String }, // thumbnail URL
   description: { type: String },
   isExpansion: { type: Boolean, default: false },
+  complexity: { type: Number },
+  categories: { type: [String], default: [] },
 });
 
 gameSchema.index({ minplayers: 1, maxplayers: 1 });
