@@ -1,8 +1,8 @@
 const router = require("express").Router();
-const controller = require("../controllers/games_controllers");
+const controller = require("../controllers/games_controllers.js");
 
-router.get("/:id", controller.getGame);
 router.get("/hot", controller.getHot);
-router.post("/filtered", controller.getFiltered);
+router.post("/filter", controller.getFiltered);
+router.get("/:id", controller.getGame);
 
 module.exports = router;

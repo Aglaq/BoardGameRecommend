@@ -12,13 +12,21 @@ const Filtered = () => {
       try {
         const response = await axios.get(`${URL}/games/hot`);
         setList(response.data.data);
-        // console.log(response.data);
       } catch (error) {
         console.log(error);
       }
     }
     findHotList();
   }, []);
+
+  async function findFiltered() {
+    try {
+      const response = await axios.get(`${URL}/games/${id}`);
+      setList(response.data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <>
