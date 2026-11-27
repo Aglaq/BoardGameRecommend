@@ -41,7 +41,7 @@ async function backfill() {
 
   const games = await Game.find().select("bgg_id").lean();
   console.log(`Backfilling ${games.length} games...`);
-  console.log(games[0]);
+
   for (let i = 0; i < games.length; i += BATCH_SIZE) {
     const batch = games.slice(i, i + BATCH_SIZE);
     const ids = batch.map((g) => g.bgg_id).join(",");
@@ -57,7 +57,7 @@ async function backfill() {
       const parsed = parser.parse(await res.text());
 
       const things = parsed.items?.item || [];
-      console.log(things[0]);
+
       for (const thing of things) {
         if (thing["@_type"] !== "boardgame") continue;
         await Game.updateOne(
